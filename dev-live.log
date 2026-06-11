@@ -1,0 +1,108 @@
+
+> attendance-system@0.1.0 dev C:\dev\attendance-system
+> next dev
+
+▲ Next.js 16.2.9 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.56.1:3000
+- Environments: .env.local
+✓ Ready in 1830ms
+
+ GET /capture 200 in 3.7s (next.js: 378ms, proxy.ts: 1448ms, application-code: 1855ms)
+ GET /admin 307 in 705ms (next.js: 61ms, proxy.ts: 190ms, application-code: 455ms)
+ POST /api/attendance/check-in 200 in 2.1s (next.js: 230ms, proxy.ts: 653ms, application-code: 1252ms)
+ GET /admin 200 in 848ms (next.js: 8ms, proxy.ts: 199ms, application-code: 641ms)
+ GET / 307 in 400ms (next.js: 89ms, proxy.ts: 120ms, application-code: 191ms)
+ GET /login 200 in 402ms (next.js: 78ms, proxy.ts: 8ms, application-code: 316ms)
+✓ Compiled in 146ms
+ GET /login 200 in 789ms (next.js: 216ms, proxy.ts: 134ms, application-code: 439ms)
+ GET /login 200 in 152ms (next.js: 11ms, proxy.ts: 21ms, application-code: 120ms)
+ GET /capture 200 in 1332ms (next.js: 31ms, proxy.ts: 510ms, application-code: 790ms)
+ GET /admin 200 in 626ms (next.js: 22ms, proxy.ts: 189ms, application-code: 416ms)
+ GET /capture 200 in 1240ms (next.js: 75ms, proxy.ts: 540ms, application-code: 624ms)
+ GET /capture 200 in 944ms (next.js: 13ms, proxy.ts: 562ms, application-code: 370ms)
+ POST /api/attendance/check-in 200 in 2.2s (next.js: 372ms, proxy.ts: 621ms, application-code: 1215ms)
+ GET /admin 200 in 978ms (next.js: 24ms, proxy.ts: 521ms, application-code: 434ms)
+ GET /capture 200 in 1134ms (next.js: 23ms, proxy.ts: 565ms, application-code: 546ms)
+ GET /capture 200 in 930ms (next.js: 24ms, proxy.ts: 338ms, application-code: 568ms)
+ GET /admin 200 in 792ms (next.js: 15ms, proxy.ts: 206ms, application-code: 572ms)
+ GET /capture 200 in 1189ms (next.js: 40ms, proxy.ts: 243ms, application-code: 906ms)
+ GET /capture 200 in 1002ms (next.js: 56ms, proxy.ts: 350ms, application-code: 596ms)
+✓ Compiled in 582ms
+ GET /capture 200 in 1620ms (next.js: 300ms, proxy.ts: 842ms, application-code: 479ms)
+ GET /capture 200 in 453ms (next.js: 8ms, proxy.ts: 247ms, application-code: 198ms)
+ GET /capture 200 in 500ms (next.js: 17ms, proxy.ts: 204ms, application-code: 279ms)
+ GET /capture 200 in 916ms (next.js: 44ms, proxy.ts: 226ms, application-code: 646ms)
+ GET /capture 200 in 545ms (next.js: 21ms, proxy.ts: 354ms, application-code: 170ms)
+ GET /capture 200 in 380ms (next.js: 7ms, proxy.ts: 214ms, application-code: 158ms)
+ GET /capture 200 in 369ms (next.js: 7ms, proxy.ts: 210ms, application-code: 153ms)
+ GET /capture 200 in 369ms (next.js: 8ms, proxy.ts: 212ms, application-code: 150ms)
+ GET /capture 200 in 403ms (next.js: 8ms, proxy.ts: 221ms, application-code: 174ms)
+ GET /capture 200 in 369ms (next.js: 7ms, proxy.ts: 210ms, application-code: 151ms)
+ GET /capture 200 in 315ms (next.js: 6ms, proxy.ts: 215ms, application-code: 93ms)
+ GET /capture 200 in 401ms (next.js: 5ms, proxy.ts: 200ms, application-code: 196ms)
+ GET /capture 200 in 475ms (next.js: 22ms, proxy.ts: 222ms, application-code: 231ms)
+ GET /capture 200 in 456ms (next.js: 32ms, proxy.ts: 257ms, application-code: 167ms)
+ GET /capture 200 in 335ms (next.js: 8ms, proxy.ts: 227ms, application-code: 100ms)
+ GET /capture 200 in 313ms (next.js: 6ms, proxy.ts: 204ms, application-code: 103ms)
+ GET /capture 200 in 312ms (next.js: 6ms, proxy.ts: 202ms, application-code: 104ms)
+ GET /capture 200 in 322ms (next.js: 7ms, proxy.ts: 208ms, application-code: 107ms)
+ GET /capture 200 in 327ms (next.js: 6ms, proxy.ts: 203ms, application-code: 118ms)
+ GET /capture 200 in 309ms (next.js: 7ms, proxy.ts: 188ms, application-code: 114ms)
+ GET /capture 200 in 460ms (next.js: 19ms, proxy.ts: 220ms, application-code: 220ms)
+ GET /capture 200 in 473ms (next.js: 31ms, proxy.ts: 232ms, application-code: 210ms)
+ GET /capture 200 in 350ms (next.js: 7ms, proxy.ts: 218ms, application-code: 125ms)
+✓ Compiled in 295ms
+ GET /capture 200 in 9.3s (next.js: 953ms, proxy.ts: 7.8s, application-code: 599ms)
+ GET /capture 200 in 910ms (next.js: 232ms, proxy.ts: 400ms, application-code: 279ms)
+ POST /api/attendance/check-in 200 in 10.7s (next.js: 161ms, proxy.ts: 6.8s, application-code: 3.8s)
+○ Compiling /capture/success ...
+ GET /capture/success 200 in 4.9s (next.js: 3.3s, proxy.ts: 872ms, application-code: 640ms)
+ GET /admin 200 in 1640ms (next.js: 405ms, proxy.ts: 648ms, application-code: 587ms)
+ GET /capture 200 in 688ms (next.js: 12ms, proxy.ts: 229ms, application-code: 447ms)
+ GET /capture 200 in 1594ms (next.js: 11ms, proxy.ts: 481ms, application-code: 1102ms)
+ GET /capture 200 in 1748ms (next.js: 327ms, proxy.ts: 795ms, application-code: 626ms)
+ POST /api/attendance/check-in 409 in 2.5s (next.js: 130ms, proxy.ts: 1202ms, application-code: 1205ms)
+ GET /admin 200 in 1067ms (next.js: 24ms, proxy.ts: 710ms, application-code: 333ms)
+ GET /capture 200 in 948ms (next.js: 15ms, proxy.ts: 238ms, application-code: 694ms)
+ GET /capture 200 in 2.2s (next.js: 6ms, proxy.ts: 1761ms, application-code: 450ms)
+✓ Compiled in 232ms
+ GET /capture 200 in 4.2s (next.js: 997ms, proxy.ts: 1932ms, application-code: 1300ms)
+ GET /capture 200 in 1177ms (next.js: 39ms, proxy.ts: 631ms, application-code: 507ms)
+ GET /capture 200 in 761ms (next.js: 35ms, proxy.ts: 319ms, application-code: 406ms)
+ GET /capture 200 in 606ms (next.js: 25ms, proxy.ts: 199ms, application-code: 382ms)
+ GET /capture 200 in 590ms (next.js: 10ms, proxy.ts: 213ms, application-code: 367ms)
+ GET /capture 200 in 1090ms (next.js: 37ms, proxy.ts: 542ms, application-code: 510ms)
+ GET /capture 200 in 901ms (next.js: 194ms, proxy.ts: 213ms, application-code: 494ms)
+ GET /capture 200 in 1528ms (next.js: 667ms, proxy.ts: 660ms, application-code: 201ms)
+ GET /login 200 in 833ms (next.js: 400ms, proxy.ts: 47ms, application-code: 386ms)
+ POST /capture 303 in 2.4s (next.js: 113ms, proxy.ts: 1140ms, application-code: 1132ms)
+  └─ ƒ signOut() in 221ms lib/actions.ts
+ GET /capture 200 in 927ms (next.js: 9ms, proxy.ts: 537ms, application-code: 381ms)
+ GET /capture 200 in 1597ms (next.js: 12ms, proxy.ts: 549ms, application-code: 1035ms)
+✓ Compiled in 326ms
+ GET /capture 200 in 2.3s (next.js: 490ms, proxy.ts: 1149ms, application-code: 627ms)
+ GET /capture 200 in 1206ms (next.js: 57ms, proxy.ts: 497ms, application-code: 651ms)
+ GET /capture 200 in 528ms (next.js: 10ms, proxy.ts: 297ms, application-code: 222ms)
+ GET /capture 200 in 512ms (next.js: 20ms, proxy.ts: 219ms, application-code: 273ms)
+ GET /capture 200 in 470ms (next.js: 8ms, proxy.ts: 293ms, application-code: 169ms)
+ GET /capture 200 in 732ms (next.js: 26ms, proxy.ts: 533ms, application-code: 174ms)
+ GET /capture 200 in 1215ms (next.js: 75ms, proxy.ts: 512ms, application-code: 628ms)
+ GET /capture 200 in 1179ms (next.js: 8ms, proxy.ts: 1058ms, application-code: 113ms)
+ GET /capture 200 in 972ms (next.js: 15ms, proxy.ts: 689ms, application-code: 267ms)
+ GET /capture 200 in 1529ms (next.js: 29ms, proxy.ts: 704ms, application-code: 796ms)
+ GET /capture 200 in 713ms (next.js: 13ms, proxy.ts: 236ms, application-code: 464ms)
+ GET /capture 200 in 513ms (next.js: 10ms, proxy.ts: 321ms, application-code: 183ms)
+ GET / 307 in 6.3s (next.js: 930ms, proxy.ts: 3.3s, application-code: 2.0s)
+ GET /admin 200 in 3.2s (next.js: 860ms, proxy.ts: 251ms, application-code: 2.1s)
+ GET /admin 200 in 1759ms (next.js: 21ms, proxy.ts: 1191ms, application-code: 547ms)
+▲ Next.js 16.2.9 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://192.168.56.1:3000
+- Environments: .env.local
+✓ Ready in 2.4s
+
+ GET /admin 200 in 17.1s (next.js: 1118ms, proxy.ts: 7.5s, application-code: 8.5s)
+✓ Compiled in 1067ms
+ GET /admin 200 in 11.7s (next.js: 1942ms, proxy.ts: 1814ms, application-code: 8.0s)
+ GET /admin 200 in 1846ms (next.js: 10ms, proxy.ts: 513ms, application-code: 1324ms)
