@@ -51,6 +51,7 @@ create table if not exists public.attendance_records (
   selfie_path text not null,
   latitude double precision not null,
   longitude double precision not null,
+  location_name text,
   checked_in_at timestamptz not null default now()
 );
 

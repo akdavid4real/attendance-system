@@ -18,6 +18,7 @@ export type AdminAttendanceRecord = {
   selfiePath: string;
   latitude: number;
   longitude: number;
+  locationName?: string;
   checkedInAt: string;
 };
 
@@ -54,6 +55,7 @@ export function AdminBoard({
       selfiePath: record.id,
       latitude: record.latitude,
       longitude: record.longitude,
+      locationName: record.locationName,
       checkedInAt: record.checkedInAt,
     }));
   });
@@ -81,6 +83,7 @@ export function AdminBoard({
         selfiePath: item.id,
         latitude: item.latitude,
         longitude: item.longitude,
+        locationName: item.locationName,
         checkedInAt: item.checkedInAt,
       }));
       setRecords(updatedRecords);
@@ -117,6 +120,7 @@ export function AdminBoard({
           selfiePath: record.id,
           latitude: record.latitude,
           longitude: record.longitude,
+          locationName: record.locationName,
           checkedInAt: record.checkedInAt,
         }),
       );
@@ -229,7 +233,8 @@ export function AdminBoard({
                     </span>
                     <span>
                       <MapPin size={16} aria-hidden="true" />
-                      {record.latitude.toFixed(5)}, {record.longitude.toFixed(5)}
+                      {record.locationName ??
+                        `${record.latitude.toFixed(5)}, ${record.longitude.toFixed(5)}`}
                     </span>
                   </div>
                 </div>

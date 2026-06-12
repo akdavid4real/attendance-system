@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { env } from "@/lib/env";
+import { reverseGeocodeLocation } from "@/lib/location";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { createClient } from "@/lib/supabase/server";
 
@@ -24,6 +25,7 @@ export async function POST(request: Request) {
     const selfie = formData.get("selfie");
     const latitude = Number(formData.get("latitude"));
     const longitude = Number(formData.get("longitude"));
+    const locationName = formData.get("locationName");
 
     if (!(selfie instanceof File)) {
       return NextResponse.json({ message: "Selfie image is required." }, { status: 400 });
@@ -39,6 +41,7 @@ export async function POST(request: Request) {
     return NextResponse.json({
       message: "Check in successful",
       selfiePath: "demo/selfie.jpg",
+      locationName: typeof locationName === "string" ? locationName : undefined,
     });
   }
 
@@ -56,6 +59,7 @@ export async function POST(request: Request) {
   const selfie = formData.get("selfie");
   const latitude = Number(formData.get("latitude"));
   const longitude = Number(formData.get("longitude"));
+  const submittedLocationName = formData.get("locationName");
 
   if (!(selfie instanceof File)) {
     return NextResponse.json({ message: "Selfie image is required." }, { status: 400 });
@@ -93,6 +97,10 @@ export async function POST(request: Request) {
   const safeTimestamp = now.toISOString().replace(/[:.]/g, "-");
   const selfiePath = `${user.id}/${safeTimestamp}.jpg`;
   const bytes = await selfie.arrayBuffer();
+  const resolvedLocation =
+    typeof submittedLocationName === "string" && submittedLocationName.trim()
+      ? submittedLocationName.trim()
+      : (await reverseGeocodeLocation(latitude, longitude)).label;
 
   const { error: uploadError } = await admin.storage
     .from(BUCKET)
@@ -110,6 +118,7 @@ export async function POST(request: Request) {
     selfie_path: selfiePath,
     latitude,
     longitude,
+    location_name: resolvedLocation,
   });
 
   if (insertError) {
@@ -131,5 +140,6 @@ export async function POST(request: Request) {
   return NextResponse.json({
     message: "Check in successful",
     selfiePath,
+    locationName: resolvedLocation,
   });
 }

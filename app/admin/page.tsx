@@ -13,6 +13,7 @@ type AttendanceRow = {
   selfie_path: string;
   latitude: number;
   longitude: number;
+  location_name: string | null;
   checked_in_at: string;
 };
 
@@ -26,7 +27,7 @@ async function getLiveAttendanceRecords(): Promise<AdminAttendanceRecord[]> {
   const admin = createAdminClient();
   const { data: rows, error } = await admin
     .from("attendance_records")
-    .select("id,user_id,selfie_path,latitude,longitude,checked_in_at")
+    .select("id,user_id,selfie_path,latitude,longitude,location_name,checked_in_at")
     .order("checked_in_at", { ascending: false })
     .limit(100)
     .returns<AttendanceRow[]>();
@@ -80,6 +81,7 @@ async function getLiveAttendanceRecords(): Promise<AdminAttendanceRecord[]> {
       selfiePath: record.selfie_path,
       latitude: record.latitude,
       longitude: record.longitude,
+      locationName: record.location_name ?? undefined,
       checkedInAt: record.checked_in_at,
     };
   });

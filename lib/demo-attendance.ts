@@ -9,6 +9,7 @@ export type DemoAttendanceRecord = {
   selfieDataUrl: string;
   latitude: number;
   longitude: number;
+  locationName?: string;
   checkedInAt: string;
 };
 
@@ -33,6 +34,7 @@ export function saveDemoAttendanceRecord(record: {
   selfieDataUrl: string;
   latitude: number;
   longitude: number;
+  locationName?: string;
 }) {
   const user = getDemoUser();
   const records = getDemoAttendanceRecords();
@@ -43,6 +45,7 @@ export function saveDemoAttendanceRecord(record: {
     selfieDataUrl: record.selfieDataUrl,
     latitude: record.latitude,
     longitude: record.longitude,
+    locationName: record.locationName,
     checkedInAt: new Date().toISOString(),
   };
 

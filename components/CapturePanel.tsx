@@ -9,6 +9,8 @@ import { saveDemoAttendanceRecord } from "@/lib/demo-attendance";
 type Position = {
   latitude: number;
   longitude: number;
+  label?: string;
+  coordinates: string;
 };
 
 type CheckInState = "idle" | "ready" | "submitting" | "success" | "error";
@@ -21,6 +23,7 @@ export function CapturePanel() {
   const [position, setPosition] = useState<Position | null>(null);
   const [state, setState] = useState<CheckInState>("idle");
   const [message, setMessage] = useState<string | null>(null);
+  const [isResolvingLocation, setIsResolvingLocation] = useState(false);
 
   useEffect(() => {
     return () => {
@@ -61,11 +64,35 @@ export function CapturePanel() {
     }
 
     navigator.geolocation.getCurrentPosition(
-      (result) => {
-        setPosition({
-          latitude: result.coords.latitude,
-          longitude: result.coords.longitude,
-        });
+      async (result) => {
+        const latitude = result.coords.latitude;
+        const longitude = result.coords.longitude;
+        const coordinates = `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
+
+        setPosition({ latitude, longitude, coordinates });
+        setIsResolvingLocation(true);
+
+        try {
+          const response = await fetch(
+            `/api/location/reverse?latitude=${encodeURIComponent(latitude)}&longitude=${encodeURIComponent(longitude)}`,
+          );
+
+          if (response.ok) {
+            const payload = (await response.json()) as {
+              label?: string;
+              coordinates?: string;
+            };
+
+            setPosition({
+              latitude,
+              longitude,
+              coordinates: payload.coordinates ?? coordinates,
+              label: payload.label,
+            });
+          }
+        } finally {
+          setIsResolvingLocation(false);
+        }
       },
       () => {
         setState("error");
@@ -120,6 +147,9 @@ export function CapturePanel() {
     formData.append("selfie", blob, "selfie.jpg");
     formData.append("latitude", String(position.latitude));
     formData.append("longitude", String(position.longitude));
+    if (position.label) {
+      formData.append("locationName", position.label);
+    }
 
     const response = await fetch("/api/attendance/check-in", {
       method: "POST",
@@ -139,6 +169,7 @@ export function CapturePanel() {
         selfieDataUrl,
         latitude: position.latitude,
         longitude: position.longitude,
+        locationName: position.label,
       });
     }
 
@@ -177,7 +208,11 @@ export function CapturePanel() {
         </button>
         <button className="ghost-button" onClick={getLocation} type="button">
           <MapPin size={18} aria-hidden="true" />
-          {position ? "Location ready" : "Allow location"}
+          {isResolvingLocation
+            ? "Finding address..."
+            : position
+              ? "Location ready"
+              : "Allow location"}
         </button>
         <button
           className="button"
@@ -191,10 +226,13 @@ export function CapturePanel() {
       </div>
 
       {position ? (
-        <p className="panel-subtitle">
-          Location captured: {position.latitude.toFixed(6)},{" "}
-          {position.longitude.toFixed(6)}
-        </p>
+        <div className="location-preview">
+          <MapPin size={18} aria-hidden="true" />
+          <div>
+            <strong>{position.label ?? "Location captured"}</strong>
+            <span>{position.coordinates}</span>
+          </div>
+        </div>
       ) : null}
 
       {message ? (

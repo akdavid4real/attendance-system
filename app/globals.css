@@ -387,6 +387,33 @@ h1 {
   margin-top: 14px;
 }
 
+.location-preview {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 16px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--muted);
+  padding: 12px 14px;
+}
+
+.location-preview strong,
+.location-preview span {
+  display: block;
+}
+
+.location-preview strong {
+  color: var(--ink);
+  line-height: 1.35;
+}
+
+.location-preview span {
+  margin-top: 4px;
+  font-size: 0.9rem;
+}
+
 .status-list {
   display: grid;
   gap: 12px;
