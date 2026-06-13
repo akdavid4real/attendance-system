@@ -1,7 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { CalendarClock, MapPin, Trash2 } from "lucide-react";
 import {
   deleteDemoAttendanceOlderThan,
@@ -32,12 +34,25 @@ function formatDate(value: string) {
 type AdminBoardProps = {
   mode?: "demo" | "live";
   initialRecords?: AdminAttendanceRecord[];
+  selectedDay?: string;
+  previousDay?: string;
+  nextDay?: string;
+  page?: number;
+  totalPages?: number;
+  totalRecords?: number;
 };
 
 export function AdminBoard({
   mode = "demo",
   initialRecords = [],
+  selectedDay,
+  previousDay,
+  nextDay,
+  page = 1,
+  totalPages = 1,
+  totalRecords,
 }: AdminBoardProps) {
+  const router = useRouter();
   const [records, setRecords] = useState<AdminAttendanceRecord[]>(() => {
     if (mode === "live") {
       return initialRecords;
@@ -59,17 +74,24 @@ export function AdminBoard({
       checkedInAt: record.checkedInAt,
     }));
   });
+  const [dateValue, setDateValue] = useState(selectedDay ?? "");
   const [retentionDays, setRetentionDays] = useState(7);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
-  const stats = useMemo(() => {
-    const today = new Date().toDateString();
-    const todayCount = records.filter(
-      (record) => new Date(record.checkedInAt).toDateString() === today,
-    ).length;
-    const uniqueUsers = new Set(records.map((record) => record.email)).size;
 
-    return { todayCount, uniqueUsers };
-  }, [records]);
+  useEffect(() => {
+    if (mode === "live") {
+      setRecords(initialRecords);
+      setDateValue(selectedDay ?? "");
+    }
+  }, [initialRecords, mode, selectedDay]);
+
+  const stats = useMemo(() => {
+    const uniqueUsers = new Set(records.map((record) => record.email)).size;
+    const visibleRecords = records.length;
+    const allRecords = mode === "live" ? totalRecords ?? visibleRecords : visibleRecords;
+
+    return { allRecords, uniqueUsers, visibleRecords };
+  }, [mode, records, totalRecords]);
 
   async function deleteRecord(record: AdminAttendanceRecord) {
     setActionMessage(null);
@@ -105,6 +127,7 @@ export function AdminBoard({
     }
 
     setRecords((current) => current.filter((item) => item.id !== record.id));
+    router.refresh();
   }
 
   async function cleanupOldRecords() {
@@ -149,6 +172,7 @@ export function AdminBoard({
     setRecords((current) =>
       current.filter((record) => !payload.deletedIds?.includes(record.id)),
     );
+    router.refresh();
   }
 
   return (
@@ -157,18 +181,54 @@ export function AdminBoard({
         <h2>Overview</h2>
         <div className="admin-metrics">
           <div className="metric">
-            <span>Today</span>
-            <strong>{stats.todayCount}</strong>
+            <span>Selected day</span>
+            <strong>{selectedDay ?? "Demo"}</strong>
           </div>
           <div className="metric">
             <span>Total records</span>
-            <strong>{records.length}</strong>
+            <strong>{stats.allRecords}</strong>
           </div>
           <div className="metric">
-            <span>People</span>
+            <span>Visible users</span>
             <strong>{stats.uniqueUsers}</strong>
           </div>
+          <div className="metric">
+            <span>Showing</span>
+            <strong>
+              {mode === "live" ? `${stats.visibleRecords} / page ${page}` : stats.visibleRecords}
+            </strong>
+          </div>
         </div>
+
+        {mode === "live" && selectedDay && previousDay && nextDay ? (
+          <div className="cleanup-box day-browser">
+            <h3>Browse by day</h3>
+            <p>Jump to any date or step through one day at a time.</p>
+            <div className="day-nav">
+              <Link className="ghost-button icon-button" href={`/admin?day=${previousDay}`}>
+                Previous day
+              </Link>
+              <Link className="ghost-button icon-button" href={`/admin?day=${nextDay}`}>
+                Next day
+              </Link>
+            </div>
+            <form action="/admin" className="day-form">
+              <label className="field" htmlFor="adminDay">
+                <span>Date</span>
+                <input
+                  id="adminDay"
+                  name="day"
+                  onChange={(event) => setDateValue(event.target.value)}
+                  type="date"
+                  value={dateValue}
+                />
+              </label>
+              <button className="button" type="submit">
+                View day
+              </button>
+            </form>
+          </div>
+        ) : null}
 
         <div className="cleanup-box">
           <h3>Picture cleanup</h3>
@@ -200,7 +260,7 @@ export function AdminBoard({
             <h2>Check-in records</h2>
             <p className="panel-subtitle">
               {mode === "live"
-                ? "Live check-ins from Supabase, newest first."
+                ? "Live check-ins from Supabase for the selected day, newest first."
                 : "Demo records are saved in this browser."}
             </p>
           </div>
@@ -208,7 +268,7 @@ export function AdminBoard({
 
         {records.length === 0 ? (
           <div className="empty-state">
-            No check-ins yet. Go to the capture page and submit one record.
+            No check-ins for this day yet.
           </div>
         ) : (
           <div className="record-list">
@@ -231,10 +291,17 @@ export function AdminBoard({
                       <CalendarClock size={16} aria-hidden="true" />
                       {formatDate(record.checkedInAt)}
                     </span>
-                    <span>
+                    <span className="record-location">
                       <MapPin size={16} aria-hidden="true" />
-                      {record.locationName ??
-                        `${record.latitude.toFixed(5)}, ${record.longitude.toFixed(5)}`}
+                      <span>
+                        <strong>
+                          {record.locationName ??
+                            `${record.latitude.toFixed(5)}, ${record.longitude.toFixed(5)}`}
+                        </strong>
+                        <small>
+                          {record.latitude.toFixed(5)}, {record.longitude.toFixed(5)}
+                        </small>
+                      </span>
                     </span>
                   </div>
                 </div>
@@ -250,6 +317,34 @@ export function AdminBoard({
             ))}
           </div>
         )}
+
+        {mode === "live" && totalPages > 1 ? (
+          <div className="pagination-bar">
+            {page > 1 && selectedDay ? (
+              <Link
+                className="ghost-button icon-button"
+                href={`/admin?day=${selectedDay}&page=${page - 1}`}
+              >
+                Previous page
+              </Link>
+            ) : (
+              <span className="ghost-button icon-button disabled-link">Previous page</span>
+            )}
+            <span className="pagination-label">
+              Page {page} of {totalPages}
+            </span>
+            {page < totalPages && selectedDay ? (
+              <Link
+                className="ghost-button icon-button"
+                href={`/admin?day=${selectedDay}&page=${page + 1}`}
+              >
+                Next page
+              </Link>
+            ) : (
+              <span className="ghost-button icon-button disabled-link">Next page</span>
+            )}
+          </div>
+        ) : null}
       </div>
     </section>
   );

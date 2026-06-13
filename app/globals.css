@@ -496,6 +496,37 @@ h1 {
   line-height: 1.5;
 }
 
+.day-browser {
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
+}
+
+.day-nav {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.day-form {
+  display: grid;
+  gap: 12px;
+}
+
+.day-form .field span {
+  margin-bottom: 7px;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.day-form input {
+  min-height: 48px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  padding: 0 13px;
+}
+
 .cleanup-row {
   display: grid;
   grid-template-columns: auto 92px auto;
@@ -564,8 +595,52 @@ h1 {
   gap: 6px;
 }
 
+.record-location {
+  align-items: flex-start;
+}
+
+.record-location > span {
+  display: grid;
+  gap: 2px;
+}
+
+.record-location strong {
+  color: var(--ink);
+  font-size: 0.94rem;
+  font-weight: 700;
+}
+
+.record-location small {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
 .danger-button {
   color: var(--danger);
+}
+
+.pagination-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 18px;
+}
+
+.pagination-label {
+  color: var(--muted);
+  font-size: 0.92rem;
+  text-align: center;
+}
+
+.icon-button {
+  min-width: 132px;
+}
+
+.disabled-link {
+  cursor: not-allowed;
+  opacity: 0.55;
+  pointer-events: none;
 }
 
 .empty-state {
@@ -640,6 +715,14 @@ h1 {
 
   .record-card .danger-button {
     grid-column: 1 / -1;
+  }
+
+  .day-nav {
+    grid-template-columns: 1fr;
+  }
+
+  .pagination-bar {
+    display: grid;
   }
 
   h1 {

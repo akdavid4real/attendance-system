@@ -5,14 +5,28 @@ export type ReverseLocation = {
 
 type NominatimAddress = {
   amenity?: string;
-  road?: string;
-  suburb?: string;
-  neighbourhood?: string;
+  attraction?: string;
+  building?: string;
   city?: string;
+  city_district?: string;
+  country?: string;
+  county?: string;
+  hamlet?: string;
+  house?: string;
+  house_number?: string;
+  leisure?: string;
+  neighbourhood?: string;
+  office?: string;
+  postcode?: string;
+  quarter?: string;
+  residential?: string;
+  road?: string;
+  shop?: string;
+  state?: string;
+  suburb?: string;
+  tourism?: string;
   town?: string;
   village?: string;
-  state?: string;
-  country?: string;
 };
 
 type NominatimReverseResponse = {
@@ -24,20 +38,76 @@ export function formatCoordinates(latitude: number, longitude: number) {
   return `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
 }
 
+function uniqueParts(parts: Array<string | undefined | null>) {
+  const seen = new Set<string>();
+
+  return parts.filter((part): part is string => {
+    if (!part) {
+      return false;
+    }
+
+    const normalized = part.trim();
+
+    if (!normalized) {
+      return false;
+    }
+
+    const key = normalized.toLowerCase();
+
+    if (seen.has(key)) {
+      return false;
+    }
+
+    seen.add(key);
+    return true;
+  });
+}
+
+function compactDisplayName(displayName: string | undefined) {
+  if (!displayName) {
+    return null;
+  }
+
+  const parts = uniqueParts(
+    displayName
+      .split(",")
+      .map((part) => part.trim())
+      .filter((part) => part && !/^\d{4,}$/.test(part)),
+  );
+
+  return parts.length ? parts.slice(0, 5).join(", ") : null;
+}
+
 function compactAddress(address: NominatimAddress | undefined) {
   if (!address) {
     return null;
   }
 
-  const locality = address.city ?? address.town ?? address.village;
-  const parts = [
-    address.amenity,
-    address.road,
-    address.neighbourhood ?? address.suburb,
+  const street = [address.house_number, address.road].filter(Boolean).join(" ").trim();
+  const locality =
+    address.city_district ??
+    address.city ??
+    address.town ??
+    address.village ??
+    address.county;
+  const parts = uniqueParts([
+    address.amenity ??
+      address.shop ??
+      address.office ??
+      address.building ??
+      address.house ??
+      address.tourism ??
+      address.leisure ??
+      address.attraction,
+    street || undefined,
+    address.neighbourhood ??
+      address.suburb ??
+      address.quarter ??
+      address.residential ??
+      address.hamlet,
     locality,
     address.state,
-    address.country,
-  ].filter(Boolean);
+  ]);
 
   return parts.length ? parts.join(", ") : null;
 }
@@ -75,7 +145,10 @@ export async function reverseGeocodeLocation(
     }
 
     const payload = (await response.json()) as NominatimReverseResponse;
-    const label = compactAddress(payload.address) ?? payload.display_name;
+    const label =
+      compactDisplayName(payload.display_name) ??
+      compactAddress(payload.address) ??
+      payload.display_name;
 
     return {
       label: label || fallback,
