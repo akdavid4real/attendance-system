@@ -3,8 +3,10 @@
 import { FormEvent, useState } from "react";
 import { Eye, EyeOff, LogIn } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { AuthHoneypotField } from "@/components/AuthHoneypotField";
 import { env } from "@/lib/env";
 import { saveDemoUser } from "@/lib/demo-session";
+import { AUTH_HONEYPOT_FIELD, hasHoneypotValue } from "@/lib/honeypot";
 import { createClient } from "@/lib/supabase/browser";
 
 export function LoginForm() {
@@ -17,6 +19,14 @@ export function LoginForm() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+
+    if (hasHoneypotValue(formData.get(AUTH_HONEYPOT_FIELD))) {
+      setStatus("idle");
+      setMessage(null);
+      return;
+    }
+
     setStatus("loading");
     setMessage(null);
 
@@ -49,6 +59,8 @@ export function LoginForm() {
   return (
     <form className="form" onSubmit={handleSubmit}>
       {message ? <div className="notice error">{message}</div> : null}
+
+      <AuthHoneypotField id="login-company-website" />
 
       <div className="field">
         <label htmlFor="email">Email</label>

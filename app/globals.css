@@ -202,6 +202,17 @@ h1 {
   gap: 16px;
 }
 
+.honeypot-field {
+  position: absolute;
+  left: -10000px;
+  top: auto;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
 .field {
   display: grid;
   gap: 7px;

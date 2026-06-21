@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -53,11 +53,7 @@ export function AdminBoard({
   totalRecords,
 }: AdminBoardProps) {
   const router = useRouter();
-  const [records, setRecords] = useState<AdminAttendanceRecord[]>(() => {
-    if (mode === "live") {
-      return initialRecords;
-    }
-
+  const [demoRecords, setDemoRecords] = useState<AdminAttendanceRecord[]>(() => {
     if (typeof window === "undefined") {
       return [];
     }
@@ -74,16 +70,19 @@ export function AdminBoard({
       checkedInAt: record.checkedInAt,
     }));
   });
-  const [dateValue, setDateValue] = useState(selectedDay ?? "");
+  const [removedLiveRecordIds, setRemovedLiveRecordIds] = useState<Set<string>>(
+    () => new Set(),
+  );
   const [retentionDays, setRetentionDays] = useState(7);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
 
-  useEffect(() => {
+  const records = useMemo(() => {
     if (mode === "live") {
-      setRecords(initialRecords);
-      setDateValue(selectedDay ?? "");
+      return initialRecords.filter((record) => !removedLiveRecordIds.has(record.id));
     }
-  }, [initialRecords, mode, selectedDay]);
+
+    return demoRecords;
+  }, [demoRecords, initialRecords, mode, removedLiveRecordIds]);
 
   const stats = useMemo(() => {
     const uniqueUsers = new Set(records.map((record) => record.email)).size;
@@ -108,7 +107,7 @@ export function AdminBoard({
         locationName: item.locationName,
         checkedInAt: item.checkedInAt,
       }));
-      setRecords(updatedRecords);
+      setDemoRecords(updatedRecords);
       return;
     }
 
@@ -126,7 +125,11 @@ export function AdminBoard({
       return;
     }
 
-    setRecords((current) => current.filter((item) => item.id !== record.id));
+    setRemovedLiveRecordIds((current) => {
+      const next = new Set(current);
+      next.add(record.id);
+      return next;
+    });
     router.refresh();
   }
 
@@ -147,7 +150,7 @@ export function AdminBoard({
           checkedInAt: record.checkedInAt,
         }),
       );
-      setRecords(updatedRecords);
+      setDemoRecords(updatedRecords);
       return;
     }
 
@@ -169,9 +172,11 @@ export function AdminBoard({
       return;
     }
 
-    setRecords((current) =>
-      current.filter((record) => !payload.deletedIds?.includes(record.id)),
-    );
+    setRemovedLiveRecordIds((current) => {
+      const next = new Set(current);
+      payload.deletedIds?.forEach((id) => next.add(id));
+      return next;
+    });
     router.refresh();
   }
 
@@ -216,11 +221,11 @@ export function AdminBoard({
               <label className="field" htmlFor="adminDay">
                 <span>Date</span>
                 <input
+                  defaultValue={selectedDay ?? ""}
                   id="adminDay"
+                  key={selectedDay ?? "selected-day"}
                   name="day"
-                  onChange={(event) => setDateValue(event.target.value)}
                   type="date"
-                  value={dateValue}
                 />
               </label>
               <button className="button" type="submit">

@@ -3,8 +3,10 @@
 import { FormEvent, useState } from "react";
 import { Eye, EyeOff, UserPlus } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { AuthHoneypotField } from "@/components/AuthHoneypotField";
 import { env } from "@/lib/env";
 import { saveDemoUser } from "@/lib/demo-session";
+import { AUTH_HONEYPOT_FIELD, hasHoneypotValue } from "@/lib/honeypot";
 import { createClient } from "@/lib/supabase/browser";
 
 export function SignupForm() {
@@ -21,7 +23,13 @@ export function SignupForm() {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const formData = new FormData(event.currentTarget);
     setMessage(null);
+
+    if (hasHoneypotValue(formData.get(AUTH_HONEYPOT_FIELD))) {
+      setStatus("idle");
+      return;
+    }
 
     if (password !== confirmPassword) {
       setStatus("error");
@@ -40,27 +48,39 @@ export function SignupForm() {
       return;
     }
 
-    const supabase = createClient();
-    const { data, error } = await supabase.auth.signUp({
-      email: email.trim(),
-      password,
-      options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
-        data: {
-          full_name: fullName.trim(),
-        },
+    const normalizedEmail = email.trim().toLowerCase();
+    const signupResponse = await fetch("/api/auth/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        fullName: fullName.trim(),
+        email: normalizedEmail,
+        password,
+        [AUTH_HONEYPOT_FIELD]: formData.get(AUTH_HONEYPOT_FIELD),
+      }),
+    });
+
+    if (!signupResponse.ok) {
+      const payload = (await signupResponse.json().catch(() => null)) as {
+        error?: string;
+      } | null;
+
+      setStatus("error");
+      setMessage(payload?.error ?? "Unable to create account.");
+      return;
+    }
+
+    const supabase = createClient();
+    const { error } = await supabase.auth.signInWithPassword({
+      email: normalizedEmail,
+      password,
     });
 
     if (error) {
       setStatus("error");
       setMessage(error.message);
-      return;
-    }
-
-    if (!data.session) {
-      setStatus("success");
-      setMessage("Account created. Confirm your email, then login.");
       return;
     }
 
@@ -75,6 +95,8 @@ export function SignupForm() {
           {message}
         </div>
       ) : null}
+
+      <AuthHoneypotField id="signup-company-website" />
 
       <div className="field">
         <label htmlFor="fullName">Full name</label>
